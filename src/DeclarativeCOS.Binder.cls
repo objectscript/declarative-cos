@@ -24,5 +24,20 @@ Method GetFunction()
     return ..function
 }
 
+Method ForEach()
+{
+    set index = ""
+
+    for {
+        set index = ..collection.Next(index)
+
+        quit:index=""
+
+        set item = ..collection.GetAt(index)
+
+        do $classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)
+    }
+}
+
 }
 
