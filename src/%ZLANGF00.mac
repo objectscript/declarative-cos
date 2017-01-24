@@ -1,0 +1,8 @@
+QUIT
+.
+ZBIND(collection, function) public {
+  Quit ##class(DeclarativeCOS.Binder).%New(collection, function)
+}
+
+
+
