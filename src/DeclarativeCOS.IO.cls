@@ -8,5 +8,12 @@ ClassMethod print(value As %Library.DataType)
     w value
 }
 
+// @Declarative [io:println]
+
+ClassMethod println(value As %Library.DataType)
+{
+    w value, !
+}
+
 }
 
