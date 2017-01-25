@@ -81,5 +81,26 @@ Method Find()
     return ""
 }
 
+Method Filter()
+{
+    set collection = $classmethod(..collection.%ClassName(), "%New")
+
+    set index = ""
+
+    for {
+        set index = ..collection.Next(index)
+
+        quit:index=""
+
+        set item = ..collection.GetAt(index)
+
+        if ($classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)) {
+            do collection.Insert(item)
+        }
+    }
+
+    return collection
+}
+
 }
 
