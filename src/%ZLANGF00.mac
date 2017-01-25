@@ -15,3 +15,7 @@ ZFIND(collection, function) public {
 ZFILTER(collection, function) public {
   Quit $zbind(collection, function).Filter()
 }
+.
+ZEXISTS(collection, function) public {
+  Quit $zbind(collection, function).Exists()
+}
