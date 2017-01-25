@@ -39,5 +39,26 @@ Method ForEach()
     }
 }
 
+Method Map()
+{
+    set collection = $classmethod(..collection.%ClassName(), "%New")
+
+    set index = ""
+
+    for {
+        set index = ..collection.Next(index)
+
+        quit:index=""
+
+        set item = ..collection.GetAt(index)
+
+        set mappedItem = $classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)
+
+        do collection.Insert(mappedItem)
+    }
+
+    return collection
+}
+
 }
 
