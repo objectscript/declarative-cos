@@ -19,3 +19,7 @@ ZFILTER(collection, function) public {
 ZEXISTS(collection, function) public {
   Quit $zbind(collection, function).Exists()
 }
+.
+ZCOUNT(collection, function) public {
+  Quit $zbind(collection, function).Count()
+}
