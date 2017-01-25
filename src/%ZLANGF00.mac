@@ -11,4 +11,7 @@ ZMAP(collection, function) public {
 ZFIND(collection, function) public {
   Quit $zbind(collection, function).Find()
 }
-
+.
+ZFILTER(collection, function) public {
+  Quit $zbind(collection, function).Filter()
+}
