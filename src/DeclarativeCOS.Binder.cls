@@ -107,5 +107,26 @@ Method Exists()
     return ..Find() '= ""
 }
 
+Method Count()
+{
+    set count = 0
+
+    set index = ""
+
+    for {
+        set index = ..collection.Next(index)
+
+        quit:index=""
+
+        set item = ..collection.GetAt(index)
+
+        if ($classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)) {
+            set count = count + 1
+        }
+    }
+
+    return count
+}
+
 }
 
