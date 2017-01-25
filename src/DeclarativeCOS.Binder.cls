@@ -102,5 +102,10 @@ Method Filter()
     return collection
 }
 
+Method Exists()
+{
+    return ..Find() '= ""
+}
+
 }
 
