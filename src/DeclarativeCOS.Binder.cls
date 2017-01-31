@@ -35,7 +35,9 @@ Method ForEach()
 
         set item = ..collection.GetAt(index)
 
-        do $classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)
+        set $lb(className, methodName) = ##class(DeclarativeCOS.DeclarativesManager).loadDeclarative(..function)
+
+        do $classmethod(className, methodName, item)
     }
 }
 

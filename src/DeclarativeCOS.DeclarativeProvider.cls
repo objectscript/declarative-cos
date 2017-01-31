@@ -3,34 +3,37 @@ Class DeclarativeCOS.DeclarativeProvider
 
 ClassMethod register() [ CodeMode = objectgenerator ]
 {
-    s methods = %compiledclass.Methods
+    if (%compiledclass.Name = "DeclarativeCOS.DeclarativeProvider") {
+        kill ^DeclarativeCOS
+    }
 
-    s i = ""  
+    set methods = %compiledclass.Methods
+
+    set i = ""
 
     for {
-        s i = methods.Next(i)
+        set i = methods.Next(i)
 
-        q:i=""
+        quit:i=""
 
-        s method = methods.GetAt(i)
+        set method = methods.GetAt(i)
 
-        s methodName = method.Name
+        set methodName = method.Name
 
-        s methodDescription = method.Description
+        set methodDescription = method.Description
 
         continue:methodName="register"
 
         continue:$extract(methodName)="%"
 
-        s annotationRegexp = "@Declarative\s+\[\s*(\w+\s*\:\s*\w+)\s*\]"
+        set annotationRegexp = "@Declarative\s+\[\s*(\w+\s*\:\s*\w+)\s*\]"
 
-        s annotationMatcher = ##class(%Regex.Matcher).%New(annotationRegexp, methodDescription)
+        set annotationMatcher = ##class(%Regex.Matcher).%New(annotationRegexp, methodDescription)
 
         if (annotationMatcher.Locate()) {
-            s annotationValue = $replace(annotationMatcher.Group(1), " ", "")
+            set annotationValue = $replace(annotationMatcher.Group(1), " ", "")
 
-            s ^DeclarativeCOS(annotationValue, "class") = %compiledclass.Name
-            s ^DeclarativeCOS(annotationValue, "method") = methodName
+            do ##class(DeclarativeCOS.DeclarativesManager).saveDeclarative(annotationValue, %compiledclass.Name, methodName)
         }
     }
 
