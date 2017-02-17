@@ -23,3 +23,7 @@ ZEXISTS(collection, function) public {
 ZCOUNT(collection, function) public {
   Quit $zbind(collection, function).Count()
 }
+.
+ZJOIN(collection, separator = "") public {
+  Quit ##class(DeclarativeCOS.Joiner).join(collection, separator)
+}
