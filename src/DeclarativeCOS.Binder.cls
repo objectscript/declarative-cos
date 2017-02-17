@@ -7,9 +7,15 @@ Property function As %String [ Private ];
 
 Method %OnNew(collection As %Collection.AbstractList, function As %String) As %Status [ Private, ServerOnly = 1 ]
 {
+    if ('##class(DeclarativeCOS.Utils).isValidName(function)) {
+        set exception = ##class(%Exception.General).%New("Declarative name is invalid", "1",,"Declarative name pattern must be ""namespace:function"".")
+
+        throw exception
+    }
+
     set ..collection = collection
 
-    set ..function = $replace(function, " ", "")
+    set ..function = ##class(DeclarativeCOS.Utils).normalizeName(function)
 
     return $$$OK
 }
@@ -26,6 +32,8 @@ Method GetFunction()
 
 Method ForEach()
 {
+    quit:..collection=""
+
     set index = ""
 
     for {
@@ -35,7 +43,7 @@ Method ForEach()
 
         set item = ..collection.GetAt(index)
 
-        set $lb(className, methodName) = ##class(DeclarativeCOS.DeclarativesManager).loadDeclarative(..function)
+        set $lb(className, methodName) = ..loadDeclarative(..function)
 
         do $classmethod(className, methodName, item)
     }
@@ -54,7 +62,9 @@ Method Map()
 
         set item = ..collection.GetAt(index)
 
-        set mappedItem = $classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)
+        set $lb(className, methodName) = ..loadDeclarative(..function)
+
+        set mappedItem = $classmethod(className, methodName, item)
 
         do collection.Insert(mappedItem)
     }
@@ -64,8 +74,6 @@ Method Map()
 
 Method Find()
 {
-    set collection = $classmethod(..collection.%ClassName(), "%New")
-
     set index = ""
 
     for {
@@ -75,7 +83,9 @@ Method Find()
 
         set item = ..collection.GetAt(index)
 
-        if ($classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)) {
+        set $lb(className, methodName) = ..loadDeclarative(..function)
+
+        if ($classmethod(className, methodName, item)) {
             return item
         }
     }
@@ -96,7 +106,9 @@ Method Filter()
 
         set item = ..collection.GetAt(index)
 
-        if ($classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)) {
+        set $lb(className, methodName) = ..loadDeclarative(..function)
+
+        if ($classmethod(className, methodName, item)) {
             do collection.Insert(item)
         }
     }
@@ -122,12 +134,19 @@ Method Count()
 
         set item = ..collection.GetAt(index)
 
-        if ($classmethod($get(^DeclarativeCOS(..function, "class")), $get(^DeclarativeCOS(..function, "method")), item)) {
+        set $lb(className, methodName) = ..loadDeclarative(..function)
+
+        if ($classmethod(className, methodName, item)) {
             set count = count + 1
         }
     }
 
     return count
+}
+
+ClassMethod loadDeclarative(function As %String)
+{
+    return ##class(DeclarativeCOS.DeclarativesManager).loadDeclarative(function)
 }
 
 }
