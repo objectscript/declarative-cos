@@ -26,7 +26,9 @@ ClassMethod register() [ CodeMode = objectgenerator ]
 
         continue:$extract(methodName)="%"
 
-        set annotationRegexp = "@Declarative\s+\[\s*(\w+\s*\:\s*\w+)\s*\]"
+        set declarativeNameRegex = ##class(DeclarativeCOS.Utils).#DECLARATIVENAMEREGEX
+
+        set annotationRegexp = "@Declarative\(""(" _ declarativeNameRegex _ ")""\)"
 
         set annotationMatcher = ##class(%Regex.Matcher).%New(annotationRegexp, methodDescription)
 
