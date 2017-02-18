@@ -62,7 +62,7 @@ ClassMethod print(value As %String)
 Class MyPackage.IO extens DeclarativeProvider
 {
 
-// @Declarative [io:print]
+/// @Declarative("io:print")
 ClassMethod print(value As %String)
 {
     w value
