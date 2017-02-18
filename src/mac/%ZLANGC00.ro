@@ -1,0 +1,7 @@
+QUIT
+.
+ZFOREACH(binder) public {
+  do binder.ForEach()
+  Quit
+}
+
