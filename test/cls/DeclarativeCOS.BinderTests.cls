@@ -15,42 +15,6 @@ ClassMethod toGlobal(word As %String)
     elseif ('$data(@global@("word3"))) { set @global@("word3") = word }
 }
 
-/// @Declarative("test.map:nameNumber")
-ClassMethod nameNumber(value As %Numeric) As %String
-{
-    return $select(value=1:"one", value=2:"two", value=3:"three", 1:"")
-}
-
-/// @Declarative("test.find:isEven")
-ClassMethod isEven(value As %Numeric)
-{
-    return value # 2 = 0
-}
-
-/// @Declarative("test.filter:isOdd")
-ClassMethod isOdd(value As %Numeric)
-{
-    return '..isEven(value)
-}
-
-/// @Declarative("test.exists:isNameMaks")
-ClassMethod isNameMaks(value As %String)
-{
-    return value = "Maks"
-}
-
-/// @Declarative("test.exists:isNamePeter")
-ClassMethod isNamePeter(value As %String)
-{
-    return value = "Peter"
-}
-
-/// @Declarative("test.count:greateOrEqualThan2000")
-ClassMethod greateOrEqualThan2000(value As %Numeric)
-{
-    return (value >= 2000)
-}
-
 Method TestForEach()
 {
     set global = $name(@..#TESTGLOBALNAME@("forEach"))
@@ -75,96 +39,103 @@ Method TestForEach()
 
 Method TestMap()
 {
-    set (number1, number2, number3) = $lb(1, 2, 3)
-
     set numbers = ##class(%ListOfDataTypes).%New()
-    do numbers.Insert(number1)
-    do numbers.Insert(number2)
-    do numbers.Insert(number3)
 
-    set namedNumbers = $zmap(numbers, "test.map:nameNumber")
+    for i=1:1:10 { do numbers.Insert($random(1000)) }
 
-    do $$$AssertEquals(numbers.Count(), namedNumbers.Count(), "Numbers collections must have the same count of items")
+    set hexNumbers = $zmap(numbers, "examples:toHex")
 
-    do $$$AssertEquals(numbers.%ClassName(), namedNumbers.%ClassName(), "Numbers collections must have the same class name")
+    for i=1:1:numbers.Count() { do numbers.SetAt($zhex(numbers.GetAt(i)), i) }
 
-    do $$$AssertEquals(..nameNumber(number1), namedNumbers.GetAt(number1), "1 == one")
-    do $$$AssertEquals(..nameNumber(number2), namedNumbers.GetAt(number2), "2 == two")
-    do $$$AssertEquals(..nameNumber(number3), namedNumbers.GetAt(number3), "3 == three")
+    do $$$AssertEquals($zjoin(numbers, ","), $zjoin(hexNumbers, ","), "$zmap works!")
 }
 
 Method TestFind()
 {
-    set (number1, number2, number3) = $lb(1, 2, 3)
-
     set numbers = ##class(%ListOfDataTypes).%New()
-    do numbers.Insert(number1)
-    do numbers.Insert(number2)
-    do numbers.Insert(number3)
 
-    set evenNumber = $zfind(numbers, "test.find:isEven")
+    for i=1:1:10 { do numbers.Insert($random(1000)) }
 
-    do $$$AssertEquals(number2, evenNumber, "2 is even")
+    set expectedPrimeNumber = ""
 
-    do numbers.RemoveAt(number2)
+    for i=1:1:numbers.Count() {
+        set number = numbers.GetAt(i)
 
-    do $$$AssertNotTrue($zfind(numbers, "test.find:isEven"), "Numbers collection has no even numbers now")
+        if (##class(DeclarativeCOS.Examples).isPrime(number)) {
+            set expectedPrimeNumber = number
+        }
+
+        quit:expectedPrimeNumber'=""
+    }
+
+    set actualPrimeNumber = $zfind(numbers, "examples:isPrime")
+
+    do $$$AssertEquals(expectedPrimeNumber, actualPrimeNumber, "$zfind works!")
 }
 
 Method TestFilter()
 {
-    set $lb(number1, number2, number3) = $lb(1, 2, 3)
-
     set numbers = ##class(%ListOfDataTypes).%New()
-    do numbers.Insert(number1)
-    do numbers.Insert(number2)
-    do numbers.Insert(number3)
 
-    set oddNumbers = $zfilter(numbers, "test.filter:isOdd")
+    for i=1:1:10 { do numbers.Insert($random(1000)) }
 
-    do $$$AssertEquals(numbers.Count() - 1, oddNumbers.Count(), "Numbers collections contains only one even number")
+    set expectedFilteredNumbers = ##class(%ListOfDataTypes).%New()
 
-    do $$$AssertEquals(numbers.%ClassName(), oddNumbers.%ClassName(), "Numbers collections must have the same class name")
+    for i=1:1:numbers.Count() {
+        set number = numbers.GetAt(i)
 
-    do $$$AssertEquals(number1, oddNumbers.GetAt(1), "1 is odd")
-    do $$$AssertEquals(number3, oddNumbers.GetAt(2), "3 is odd")
+        if (##class(DeclarativeCOS.Examples).isOdd(number)) {
+            do expectedFilteredNumbers.Insert(number)
+        }
+    }
+
+    set actualFilteredNumbers = $zfilter(numbers, "examples:isOdd")
+
+    do $$$AssertEquals($zjoin(expectedFilteredNumbers, ","), $zjoin(actualFilteredNumbers, ","), "$zfilter works!")
 }
 
 Method TestExists()
 {
-    set $lb(nameMaks, nameJohn, nameDonny) = $lb("Maks", "John", "Donny")
+    set numbers = ##class(%ListOfDataTypes).%New()
 
-    set names = ##class(%ListOfDataTypes).%New()
-    do names.Insert(nameMaks)
-    do names.Insert(nameJohn)
-    do names.Insert(nameDonny)
+    for i=1:1:10 { do numbers.Insert($random(1000)) }
 
-    set isNameMaksExist = $zexists(names, "test.exists:isNameMaks")
+    set expectedHasEvenNumber = $$$NO
 
-    do $$$AssertTrue(isNameMaksExist, """Maks"" exists in names collection")
+    for i=1:1:numbers.Count() {
+        set number = numbers.GetAt(i)
 
-    set isNamePeterExist = $zexists(names, "test.exists:isNamePeter")
+        if (##class(DeclarativeCOS.Examples).isEven(number)) {
+            set expectedHasEvenNumber = $$$YES
+        }
 
-    do $$$AssertNotTrue(isNamePeterExist, """Peter"" doesn't exists in names collection")
+        quit:expectedHasEvenNumber'=""
+    }
+
+    set actualHasEvenNumber = $zexists(numbers, "examples:isEven")
+
+    do $$$AssertEquals(expectedHasEvenNumber, actualHasEvenNumber, "$zexists works!")
 }
 
 Method TestCount()
 {
-    set $lb(year1998, year1999, year2000, year2001) = $lb(1998, 1999, 2000, 2001)
+    set numbers = ##class(%ListOfDataTypes).%New()
 
-    set years = ##class(%ListOfDataTypes).%New()
-    do years.Insert(year1998)
-    do years.Insert(year1999)
-    do years.Insert(year2000)
-    do years.Insert(year2001)
+    for i=1:1:10 { do numbers.Insert($random(1000)) }
 
-    set expectedFilteredYears = ##class(%ListOfDataTypes).%New()
-    do expectedFilteredYears.Insert(year2000)
-    do expectedFilteredYears.Insert(year2001)
+    set expectedPalindromicNumbersCount = 0
 
-    set filteredYearsCount = $zcount(years, "test.count:greateOrEqualThan2000")
+    for i=1:1:numbers.Count() {
+        set number = numbers.GetAt(i)
 
-    do $$$AssertEquals(expectedFilteredYears.Count(), filteredYearsCount, "Only two years should be filtered")
+        if (##class(DeclarativeCOS.Examples).isPalindromic(number)) {
+            set expectedPalindromicNumbersCount = $increment(expectedPalindromicNumbersCount)
+        }
+    }
+
+    set actualPalindromicNumbersCount = $zcount(numbers, "examples:isPalindromic")
+
+    do $$$AssertEquals(expectedPalindromicNumbersCount, actualPalindromicNumbersCount, "$zcount works!")
 }
 
 }

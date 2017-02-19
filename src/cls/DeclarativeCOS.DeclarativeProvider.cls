@@ -1,6 +1,11 @@
+/// The heart of DeclarativeCOS!
+/// All declarative providers must extend the class.
 Class DeclarativeCOS.DeclarativeProvider
 {
 
+/// The DeclarativeCOS magic.
+/// Code generator for registration declaratives in
+/// special global: ^DeclarativeCOS
 ClassMethod register() [ CodeMode = objectgenerator ]
 {
     if (%compiledclass.Name = "DeclarativeCOS.DeclarativeProvider") {

@@ -1,5 +1,22 @@
 QUIT
 .
+ //
+ // "zforeach" command.
+ //
+ // Applies the certain function to each element of the collection.
+ //
+ // Example:
+ //   NAMESPACE> set collection = ##class(%ListOfDataTypes).%New()
+ //   NAMESPACE> do collection.Insert("Hello ")
+ //   NAMESPACE> do collection.Insert("World!")
+ //   NAMESPACE>
+ //   NAMESPACE> zforeach $zbind(collection, "io:print")
+ //
+ // See also:
+ //   DeclarativeCOS.Binder
+ //   DeclarativeCOS.Binder#ForEach
+ //   DeclarativeCOS.IO
+ //
 ZFOREACH(binder) public {
   do binder.ForEach()
   Quit

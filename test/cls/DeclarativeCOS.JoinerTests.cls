@@ -8,7 +8,7 @@ Method TestJoin()
     do words.Insert("is")
     do words.Insert("awesome!")
 
-    do $$$AssertEquals("DeclarativeCOS is awesome!", $zjoin(words, " "), "$zjoin must concatenate collection using separator")
+    do $$$AssertEquals("DeclarativeCOS is awesome!", $zjoin(words, " "), "$zjoin works!")
 }
 
 }
