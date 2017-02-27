@@ -66,7 +66,7 @@ while (i '= "") {
 ```
 /// New way
 
-w ##class(DeclarativeCOS.Joiner).%New(collection, " ").join()
+w ##class(DeclarativeCOS.Joiner).join(collection, " ")
 
 /// or
 
