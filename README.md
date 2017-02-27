@@ -23,6 +23,68 @@ The main point is not to add one-liners features to COS. The main point is to br
 Loop is just an instrument to solve the problem. In common, the problem is to traverse by collection and do some action with every element. Do you really need a loop for it? No. You choose a loop because COS supports loops only. DeclarativeCOS allows to write the code in declarative style. Just declare what you want to do and DeclarativeCOS will do all the rest for you.
 <br/>
 <br/>
+# OK. Examples, please.
+
+**What is about output collection?**
+```
+/// Usual way
+
+set i = collection.Next("")
+
+while (i '= "") {
+    set item = collection.GetAt(i)
+
+    w item,!
+
+    set i = collection.Next(i)
+}
+```
+```
+/// New way
+
+d ##class(DeclarativeCOS.Binder).%New(collection, "io:println").ForEach()
+
+/// or
+
+zforeach $zbind(collection, "io:println")
+```
+
+**What is about output collection? (one more)**
+```
+/// Usual way
+
+set i = collection.Next("")
+
+while (i '= "") {
+    set item = collection.GetAt(i)
+
+    w item _ " "
+
+    set i = collection.Next(i)
+}
+```
+```
+/// New way
+
+w ##class(DeclarativeCOS.Joiner).%New(collection, " ").join()
+
+/// or
+
+w $zjoin(collection, " ")
+```
+<br/>
+<br/>
+# How to install it?
+
+In the root of the repo you can find two xml files:
+**install.base.xml**,
+**install.advanced.xml**.
+
+The first file installs all needed classes to perform any examples above.
+
+The second file installs short functions and commands: zforeach, $zmap, $zfind, $zfilter, $zexists, $zcount, $zjoin.
+<br/>
+<br/>
 # OK. How does it work?
 
 **5 steps:**
