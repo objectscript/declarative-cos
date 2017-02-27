@@ -76,7 +76,7 @@ w $zjoin(collection, " ")
 <br/>
 # How to install it?
 
-In the root of the repo you can find two xml files:
+In releases of the repo you can find two xml files:
 **install.base.xml**,
 **install.advanced.xml**.
 
