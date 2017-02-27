@@ -1,4 +1,4 @@
-# Welcome to the DeclarativeCOS!
+# Welcome to the DeclarativeCOS! (available for Caché 2015.1+)
 <br/>
 <br/>
 <br/>
